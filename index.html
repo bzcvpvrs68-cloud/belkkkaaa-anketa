@@ -2,16 +2,11 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Ольга belkkkaaa | Smart Money трейдер</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ольга belkkkaaa | Трейдер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0a0c10;
             font-family: 'Inter', sans-serif;
@@ -19,29 +14,98 @@
             line-height: 1.5;
             padding: 24px 16px 64px;
         }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
+        .container { max-width: 1000px; margin: 0 auto; position: relative; }
+        .admin-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e2a3a;
+            border: 1px solid #3b6eff;
+            border-radius: 60px;
+            padding: 12px 18px;
+            cursor: pointer;
+            font-size: 1.4rem;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
-
-        /* карточки */
+        .admin-toggle:hover { background: #2a3a50; }
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .admin-modal.active { visibility: visible; opacity: 1; }
+        .admin-panel {
+            background: #11161f;
+            border: 1px solid #2e3a48;
+            border-radius: 32px;
+            width: 90%;
+            max-width: 750px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        .admin-panel h3 { margin-bottom: 20px; font-size: 1.5rem; }
+        .admin-section { margin-bottom: 32px; border-top: 1px solid #2a3240; padding-top: 20px; }
+        .video-editor-item, .wallet-editor-item {
+            background: #0c1018;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #2a3240;
+        }
+        .video-editor-item input, .wallet-editor-item input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            background: #1a202c;
+            border: 1px solid #2d3e5a;
+            border-radius: 14px;
+            color: white;
+            font-family: inherit;
+        }
+        .wallet-editor-item .field-label {
+            font-size: 0.7rem;
+            color: #8f9bb3;
+            margin-bottom: 4px;
+            margin-top: 8px;
+        }
+        .wallet-editor-item .field-label:first-of-type { margin-top: 0; }
+        button {
+            background: #2a3f5e;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 24px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+        button.danger { background: #c42e3a; }
+        button.danger:hover { background: #a82832; }
+        button.success { background: #2e6a4a; }
+        button.success:hover { background: #23593e; }
+        .close-modal { background: #4a5b7a; margin-top: 20px; }
         .card {
             background: rgba(18, 22, 28, 0.85);
-            backdrop-filter: blur(2px);
             border: 1px solid #2a2f3a;
             border-radius: 32px;
             padding: 28px 24px;
             margin-bottom: 24px;
-            transition: all 0.2s ease;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
-
-        .card:hover {
-            border-color: #3a4a6e;
-        }
-
-        /* хедер / профиль */
         .profile-header {
             display: flex;
             flex-wrap: wrap;
@@ -50,7 +114,6 @@
             gap: 20px;
             margin-bottom: 16px;
         }
-
         .name-section h1 {
             font-size: 2.4rem;
             font-weight: 700;
@@ -58,544 +121,556 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            letter-spacing: -0.3px;
         }
-
-        .nick {
-            font-size: 1.1rem;
-            color: #8f9bb3;
-            margin-top: 6px;
-            letter-spacing: 0.2px;
-        }
-
+        .nick { font-size: 1.1rem; color: #8f9bb3; margin-top: 6px; }
         .badge {
             background: #1e2a3a;
             padding: 6px 14px;
             border-radius: 60px;
             font-size: 0.85rem;
-            font-weight: 500;
             color: #7fb7ff;
             border: 1px solid #2d4055;
         }
-
-        .since {
-            color: #b9c8ff;
-            font-size: 0.9rem;
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .market-badge {
-            background: #0f212e;
-            border-radius: 24px;
-            padding: 4px 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #6dc6ff;
-        }
-
-        /* сетка для двух колонок */
-        .grid-2 {
+        .since { margin-top: 10px; font-size: 0.9rem; color: #b9c8ff; }
+        .grid-2x2 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             margin-bottom: 24px;
         }
-
-        .info-item {
+        .info-card {
             background: #0f1117;
             border-radius: 24px;
-            padding: 18px;
+            padding: 20px;
             border-left: 3px solid #3b6eff;
         }
-
-        .info-item h3 {
-            font-size: 0.85rem;
+        .info-card h3 {
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #6c86a3;
             margin-bottom: 12px;
         }
-
-        .info-item p {
-            font-weight: 500;
-            font-size: 1rem;
+        .info-card ul { list-style: none; padding-left: 0; }
+        .info-card li {
+            margin-top: 6px;
+            padding-left: 16px;
+            position: relative;
         }
-
-        /* список видео */
-        .video-list {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
+        .info-card li::before {
+            content: "➥";
+            position: absolute;
+            left: 0;
+            color: #3b6eff;
         }
-
-        .video-link {
-            background: #0e121b;
-            border-radius: 20px;
-            padding: 14px 18px;
-            transition: 0.2s;
-            border: 1px solid #232832;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .video-link:hover {
-            background: #1b212c;
-            border-color: #3b6eff;
-            transform: translateX(4px);
-        }
-
-        .video-link a {
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            color: #c6d9ff;
-            flex: 1;
-        }
-
-        .video-link a:hover {
-            color: white;
-            text-decoration: underline;
-        }
-
-        .video-icon {
-            font-size: 1.4rem;
-        }
-
-        .add-video-hint {
-            font-size: 0.75rem;
-            color: #5b6e8c;
-            margin-top: 16px;
-            border-top: 1px dashed #2a2f3a;
-            padding-top: 16px;
-        }
-
-        /* кошельки / донат */
-        .donation-card {
-            background: linear-gradient(145deg, #10141e 0%, #0c0f16 100%);
-        }
-
-        .goal-item {
-            background: #090c12;
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 24px;
-            border: 1px solid #262e3c;
-        }
-
-        .goal-header {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        .goal-title {
-            font-size: 1.1rem;
-            color: #ffd966;
-        }
-
-        .goal-stats {
-            font-family: monospace;
-            font-size: 0.9rem;
-            background: #00000055;
-            padding: 4px 12px;
-            border-radius: 20px;
-        }
-
-        .progress-bar-bg {
-            background: #2a2f3c;
-            border-radius: 40px;
-            height: 12px;
-            margin: 14px 0 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            width: 0%;
-            background: linear-gradient(90deg, #3b6eff, #8c6eff);
-            height: 100%;
-            border-radius: 40px;
-            transition: width 0.3s;
-        }
-
-        .wallet-row {
-            background: #05070c;
-            border-radius: 18px;
-            padding: 14px;
-            margin: 16px 0 8px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            word-break: break-all;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .wallet-address {
-            color: #9eb1cf;
-        }
-
-        .copy-btn {
-            background: #1f2a3e;
-            border: none;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-
-        .copy-btn:hover {
-            background: #3b6eff;
-        }
-
-        .closed-badge {
-            background: #2e7d5e;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-top: 10px;
-        }
-
-        .toggle-closed {
-            background: #2d2f36;
-            border: none;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-top: 12px;
-        }
-
-        .donation-note {
-            font-size: 0.8rem;
-            color: #9aa9c1;
-            text-align: center;
-            margin-top: 20px;
-        }
-
         .disclaimer {
             background: #1a1e27;
             border-left: 4px solid #ff6b4a;
             padding: 18px;
             border-radius: 24px;
             font-size: 0.85rem;
-            color: #cbd5e6;
-            margin-top: 20px;
+            margin-top: 8px;
         }
-
+        details {
+            background: #0e121b;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border: 1px solid #232832;
+        }
+        summary {
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::before {
+            content: "▶";
+            font-size: 0.9rem;
+            color: #3b6eff;
+        }
+        details[open] summary::before { content: "▼"; }
+        .accordion-content {
+            padding: 8px 20px 20px 48px;
+            border-top: 1px solid #232832;
+        }
+        .video-item { margin-bottom: 14px; }
+        .video-item a {
+            color: #c6d9ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .video-item a:hover { text-decoration: underline; color: white; }
+        .goal-item {
+            background: #090c12;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #262e3c;
+        }
+        .progress-bar-bg {
+            background: #2a2f3c;
+            border-radius: 40px;
+            height: 10px;
+            margin: 12px 0;
+        }
+        .progress-fill {
+            width: 0%;
+            background: linear-gradient(90deg, #3b6eff, #8c6eff);
+            height: 100%;
+            border-radius: 40px;
+        }
+        .wallet-row {
+            background: #05070c;
+            border-radius: 16px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            word-break: break-all;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .copy-btn {
+            background: #1f2a3e;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
         footer {
             text-align: center;
             font-size: 0.7rem;
             color: #4f5b73;
-            margin-top: 40px;
+            margin-top: 20px;
         }
-
-        hr {
-            border-color: #242a36;
-            margin: 8px 0;
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
         }
         @media (max-width: 650px) {
-            .card {
-                padding: 20px 18px;
-            }
-            .name-section h1 {
-                font-size: 1.8rem;
-            }
+            .grid-2x2 { grid-template-columns: 1fr; gap: 16px; }
+            .name-section h1 { font-size: 1.8rem; }
+            .card { padding: 20px 18px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- ОСНОВНАЯ ИНФОРМАЦИЯ -->
     <div class="card">
         <div class="profile-header">
             <div class="name-section">
                 <h1>Ольга</h1>
                 <div class="nick">@belkkkaaa</div>
-                <div class="since">
-                    📅 В рынке с <strong>августа 2020</strong> → 5+ лет практики
-                    <span class="market-badge">⚡ Smart Money</span>
-                </div>
+                <div class="since" id="experienceYears">📅 В рынке с <strong>августа 2020</strong> → <span id="yearsCount">5</span>+ лет практики</div>
             </div>
             <div class="badge">Среднесрочные сделки | 1H+</div>
         </div>
-        <div class="grid-2">
-            <div class="info-item">
-                <h3>🎯 Рынки</h3>
-                <p>Фьючерсы на крипте · Фьючерсы MOEX</p>
+
+        <div class="grid-2x2">
+            <div class="info-card">
+                <h3>🎯 РЫНКИ</h3>
+                <p><strong>FUTURES</strong></p>
+                <ul><li>crypto</li><li>MOEX</li></ul>
             </div>
-            <div class="info-item">
-                <h3>🧠 Метод</h3>
+            <div class="info-card">
+                <h3>🧠 МЕТОД</h3>
                 <p>Анализ Smart Money (SMC / ICT концепции)</p>
             </div>
-            <div class="info-item">
-                <h3>⏱️ Таймфреймы</h3>
+            <div class="info-card">
+                <h3>⏱️ ТАЙМФРЕЙМЫ</h3>
                 <p>1H / 4H / Daily (среднесрочные позиции)</p>
             </div>
-            <div class="info-item">
-                <h3>🎯 Цель анкеты</h3>
-                <p>Делиться идеями, обучать полезному, что наработала за годы практики</p>
+            <div class="info-card">
+                <h3>🎯 ЦЕЛЬ</h3>
+                <ul>
+                    <li>Делиться идеями</li>
+                    <li>Рассказывать полезные вещи о рынке, которые приобрела за годы практики</li>
+                </ul>
             </div>
         </div>
+
         <div class="disclaimer">
             ⚠️ <strong>Важное предупреждение:</strong> Не являюсь финансовым консультантом. Все публикации — мое личное мнение. Управляйте рисками. Не инвестируйте последнее.
         </div>
     </div>
 
-    <!-- 8 ПУНКТ: как выкладываю посты + 9 ПУНКТ: обучающие видео со ссылками (скрытыми как в TG) -->
-    <div class="card">
-        <h2 style="font-size: 1.6rem; margin-bottom: 8px;">📌 Формат моих идей</h2>
-        <p style="color: #b9c5dd; margin-bottom: 18px;">На один актив — два поста:</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 32px;">
-            <div style="background: #10141e; padding: 12px 20px; border-radius: 30px;">
-                🎥 <strong>1. Видео</strong> — подробное объяснение сделки
-            </div>
-            <div style="background: #10141e; padding: 12px 20px; border-radius: 30px;">
-                📸 <strong>2. Скриншот</strong> — быстрый взгляд на результат
-            </div>
-        </div>
+    <details id="videosAccordionWrapper">
+        <summary>📚 Обучающие посты / видео</summary>
+        <div class="accordion-content" id="videosListContainer"></div>
+    </details>
 
-        <h3 style="font-size: 1.3rem; margin-bottom: 18px;">🧠 Обучающие и полезные посты (видео-разборы)</h3>
-        <div class="video-list" id="videoList">
-            <!-- сюда динамически будут подгружаться видео из редактируемого блока (для удобства заполнены примеры, которые Ольга сможет менять) -->
+    <details id="donationAccordionWrapper">
+        <summary>☕ Поддержать контент</summary>
+        <div class="accordion-content" id="donationListContainer"></div>
+    </details>
+
+    <footer>belkkkaaa — идеи не инвест-рекомендация. Риск-менеджмент обязателен.</footer>
+</div>
+
+<div class="admin-toggle" id="adminToggleBtn">⚙️</div>
+
+<div id="adminModal" class="admin-modal">
+    <div class="admin-panel">
+        <h3>🔐 Редактор контента</h3>
+        <div id="adminMessage" style="color:#aaf0a0; margin-bottom:12px;"></div>
+        <div class="admin-section">
+            <h4>📹 Видео</h4>
+            <div id="videosEditor"></div>
+            <button id="addVideoBtn" style="background:#2e6a4a;">+ Добавить видео</button>
         </div>
-        <div class="add-video-hint">
-            💡 <strong>Как менять ссылки:</strong> открой код HTML, найди массив <code>videosData</code> внутри скрипта (внизу страницы) и измени title / url. Название кликабельно → переход в TradingView.
+        <div class="admin-section">
+            <h4>💰 Кошельки / сборы</h4>
+            <div id="walletsEditor"></div>
+            <button id="addWalletBtn" style="background:#2e6a4a;">+ Добавить кошелек</button>
         </div>
+        <button id="closeAdminBtn" class="close-modal">Закрыть редактор</button>
     </div>
-
-    <!-- 10 ПУНКТ: ДОНАТ кошельки с целями, прогрессом, кнопкой закрыть сбор -->
-    <div class="card donation-card">
-        <h2 style="font-size: 1.6rem; margin-bottom: 4px;">☕ Поддержать канал</h2>
-        <p style="color: #b9c5dd; margin-bottom: 24px;">Донаты помогают создавать больше качественного контента по Smart Money и фьючерсам</p>
-        
-        <div id="donationGoalsContainer">
-            <!-- кошельки будут вставлены через js (чтобы Ольга могла менять данные и прогресс) -->
-        </div>
-
-        <div class="donation-note">
-            🔐 Любая сумма важна. Спасибо за доверие и поддержку независимого трейдинга!
-        </div>
-    </div>
-
-    <footer>
-        belkkkaaa / TradingView профиль: идеи только для обучения. Управляй рисками!
-    </footer>
 </div>
 
 <script>
-    // ------------------- 9 ПУНКТ: ВИДЕО (ОБУЧАЮЩИЕ ПОСТЫ) -------------------
-    // 👇👇👇 Ольга, ТУТ ты можешь менять список видео: 
-    // Добавляй/убирай ссылки. Поле title — что увидит человек, url — ссылка на TradingView видео/пост.
-    // Каждая ссылка открывается в новой вкладке.
-    const videosData = [
-        { title: "🔹 SMC: Как определить ликвидность перед входом (разбор BTC)", url: "https://www.tradingview.com/chart/BTCUSDT/example1/" },
-        { title: "🔹 Фьючерсы на Мосбирже — среднесрочный паттерн Smart Money", url: "https://www.tradingview.com/chart/Si/example2/" },
-        { title: "🎥 Как я анализирую 1H график перед сделкой (видео с объяснением)", url: "https://www.tradingview.com/chart/ETHUSDT/example3/" },
-        { title: "📈 Структура рынка и смена тренда — пример прибыльной сделки", url: "https://www.tradingview.com/chart/example4/" },
-        { title: "🧠 Управление рисками для среднесрочных позиций + реальный скрин", url: "https://www.tradingview.com/chart/example5/" }
+    // ---------- ДАННЫЕ ПО УМОЛЧАНИЮ ----------
+    let videos = [
+        { title: "🎬 Smart Money: как находить ликвидность", url: "https://www.youtube.com/embed/..." },
+        { title: "📈 Фьючерсы MOEX — среднесрочный паттерн", url: "https://www.youtube.com/embed/..." },
+        { title: "🧠 Управление рисками + реальная сделка", url: "https://www.youtube.com/embed/..." }
     ];
 
-    function renderVideoList() {
-        const container = document.getElementById('videoList');
-        if (!container) return;
-        container.innerHTML = '';
-        videosData.forEach(video => {
-            const linkDiv = document.createElement('div');
-            linkDiv.className = 'video-link';
-            linkDiv.innerHTML = `
-                <div class="video-icon">📺</div>
-                <a href="${video.url}" target="_blank" rel="noopener noreferrer">${video.title}</a>
-                <div style="font-size:12px; color:#4e6188;">➡️</div>
-            `;
-            container.appendChild(linkDiv);
-        });
-    }
-
-    // ------------------- 10 ПУНКТ: ДОНАТ (КОШЕЛЬКИ + ЦЕЛИ + ПРОГРЕСС + РЕДАКТИРОВАНИЕ) -------------------
-    // 👇👇👇 Ольга, здесь ты можешь менять кошельки, сети, цели, собранные суммы.
-    // - goalCurrent: сколько уже собрано (USDT/RUB указывай как тебе удобно)
-    // - goalTarget: цель сбора
-    // - isClosed: true если цель достигнута и сбор закрыт, false если открыт.
-    // После изменения данных просто сохрани файл — страница обновится.
-    
-    let donationGoals = [
-        {
-            id: "wallet_trc20",
-            title: "USDT (TRC20) - основная цель: новый софт для анализа",
-            walletAddress: "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1111",
-            network: "TRC20",
-            goalCurrent: 125,     // сумма, сколько собрано (допустим, в USD)
-            goalTarget: 500,
-            isClosed: false,
-            currency: "USDT"
-        },
-        {
-            id: "wallet_mosbir",
-            title: "Поддержка контента (Мосбиржа / рубли)",
-            walletAddress: "2202 2025 1234 5678 (СБП по номеру +7 999 123-45-67)",
-            network: "СБП / карта",
-            goalCurrent: 3400,
-            goalTarget: 10000,
-            isClosed: false,
-            currency: "₽"
-        },
-        {
-            id: "wallet_bnb",
-            title: "BNB (BSC) - запись продвинутого курса Smart Money",
-            walletAddress: "0xAbCdEf1234567890AbCdEf1234567890AbCdEf12",
-            network: "BEP-20",
-            goalCurrent: 0.8,
-            goalTarget: 5,
-            isClosed: false,
-            currency: "BNB"
-        }
+    let wallets = [
+        { title: "USDT (TRC20) — новый софт для анализа", network: "TRC20", address: "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1111", current: 125, target: 500, currency: "USDT", closed: false },
+        { title: "Поддержка контента (Мосбиржа)", network: "СБП / карта", address: "2202 2025 1234 5678 (по номеру +7 999 123-45-67)", current: 3400, target: 10000, currency: "₽", closed: false },
+        { title: "BNB (BSC) — запись курса", network: "BEP-20", address: "0xAbCdEf1234567890AbCdEf1234567890AbCdEf12", current: 0.8, target: 5, currency: "BNB", closed: false }
     ];
 
-    // функция для обновления прогресс-бара и отображения кошельков
-    function renderDonationGoals() {
-        const container = document.getElementById('donationGoalsContainer');
-        if (!container) return;
-        container.innerHTML = '';
-
-        donationGoals.forEach((goal, idx) => {
-            const percent = (goal.goalCurrent / goal.goalTarget) * 100;
-            const percentFormatted = Math.min(100, Math.floor(percent));
-            const isComplete = goal.goalCurrent >= goal.goalTarget || goal.isClosed;
-            
-            const goalDiv = document.createElement('div');
-            goalDiv.className = 'goal-item';
-            goalDiv.setAttribute('data-id', goal.id);
-            
-            // шапка цели
-            goalDiv.innerHTML = `
-                <div class="goal-header">
-                    <span class="goal-title">🎯 ${goal.title}</span>
-                    <span class="goal-stats">${goal.goalCurrent} / ${goal.goalTarget} ${goal.currency}</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-fill" style="width: ${percentFormatted}%;"></div>
-                </div>
-                <div style="font-size:0.75rem; margin-bottom: 12px; color:#b0bedb;">
-                    ${isComplete ? '✅ Сбор завершён (цель достигнута или закрыта)' : `🔥 Прогресс ${percentFormatted}%`}
-                </div>
-                <div class="wallet-row">
-                    <div>
-                        <strong>📡 ${goal.network}</strong><br>
-                        <span class="wallet-address">${goal.walletAddress}</span>
-                    </div>
-                    <button class="copy-btn" data-address="${goal.walletAddress}">Копировать</button>
-                </div>
-            `;
-            
-            // кнопка для самостоятельного управления статусом сбора (чтобы закрыть сбор, если цель собрана)
-            const toggleButton = document.createElement('button');
-            toggleButton.className = 'toggle-closed';
-            toggleButton.innerText = isComplete ? '🔁 Открыть сбор (не выполнено)' : '🔒 Закрыть сбор (цель выполнена)';
-            toggleButton.style.marginTop = '8px';
-            
-            // ВАЖНО: Ольга сможет менять статус и суммы прямо в браузере? Ты просила чтобы могла менять сама (но без интерфейса редактирования проще через код).
-            // Чтобы удобно менять самостоятельно в любое время — проще менять объект donationGoals в скрипте (выше) или добавить мини-форму.
-            // Добавим умную функцию: при клике на кнопку "закрыть сбор" мы переключаем isClosed и обновляем внешний вид.
-            // Но если ты хочешь менять сумму собранного — изменяй goalCurrent прямо в коде. Также можно сделать двойной клик для редактирования, но сделаем надёжный вариант:
-            toggleButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (!isComplete) {
-                    // закрываем сбор вручную (цель собрана)
-                    donationGoals[idx].isClosed = true;
-                    donationGoals[idx].goalCurrent = donationGoals[idx].goalTarget; // делаем текущую равной цели
-                } else {
-                    // Открываем заново, но сбрасывать суммы не будем кардинально, просто убираем флаг закрытия и уменьшаем current если хочешь?
-                    // Для удобства: если жмём откыть, то просто убираем флаг, и current оставляем как было (можно потом редактировать вручную)
-                    donationGoals[idx].isClosed = false;
-                    // не меняем сумму автоматически, чтобы сохранить честность
-                }
-                renderDonationGoals(); // перерисовка
-            });
-            goalDiv.appendChild(toggleButton);
-            
-            container.appendChild(goalDiv);
-        });
-        
-        // события копирования
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const address = this.getAttribute('data-address');
-                navigator.clipboard.writeText(address).then(() => {
-                    const originalText = this.innerText;
-                    this.innerText = 'Скопировано!';
-                    setTimeout(() => {
-                        this.innerText = originalText;
-                    }, 1500);
-                }).catch(() => {
-                    alert('Не удалось скопировать');
-                });
-            });
-        });
-    }
-
-    // функция для того чтобы Ольга могла самостоятельно менять данные кошельков или цели прямо из консоли, если надо,
-    // но основной способ: редактировать массив donationGoals и videosData в коде и обновлять файл.
-    // Сделаем ещё глобальный объект для удобства (в консоли можно будет менять)
-    window.belkkkaaaData = {
-        updateVideo: (newVideosArray) => {
-            if(Array.isArray(newVideosArray)) {
-                videosData.length = 0;
-                newVideosArray.forEach(v => videosData.push(v));
-                renderVideoList();
-            }
-        },
-        updateDonationGoals: (newGoals) => {
-            if(Array.isArray(newGoals)) {
-                donationGoals.length = 0;
-                newGoals.forEach(g => donationGoals.push(g));
-                renderDonationGoals();
-            }
-        },
-        getDonationGoals: () => donationGoals,
-        getVideos: () => videosData
+    // ----- КОНФИГУРАЦИЯ GITHUB (ЗАМЕНИ НА СВОИ ДАННЫЕ) -----
+    const GITHUB_CONFIG = {
+        token: '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',        // Замени на свой токен
+        owner: 'bzcvpvrs68-cloud',          // Замени на свой никнейм GitHub
+        repo: 'belkkkaaa-anketa',       // Название репозитория
+        path: 'data.json',              // Имя файла для хранения данных
+        branch: 'main'                  // Ветка
     };
-    
-    // Инициализация страницы
-    renderVideoList();
-    renderDonationGoals();
-    
-    // Подсказка для редактирования прогресса и целей прямо в интерфейсе (мини-панель подсказка)
-    const noteDiv = document.createElement('div');
-    noteDiv.style.marginTop = '12px';
-    noteDiv.style.fontSize = '12px';
-    noteDiv.style.background = '#0e111b';
-    noteDiv.style.padding = '10px 14px';
-    noteDiv.style.borderRadius = '20px';
-    noteDiv.style.color = '#7b8bb0';
-    noteDiv.innerHTML = '✏️ <strong>Как менять донаты/цели:</strong> отредактируй массив <code>donationGoals</code> в коде (суммы, кошельки, isClosed). После изменений сохрани файл — страница обновится. Либо используй консоль: <code>window.belkkkaaaData.updateDonationGoals([...])</code>';
-    const donationCard = document.querySelector('.donation-card');
-    if(donationCard) donationCard.appendChild(noteDiv);
-    
-    // дополнительный блок для видео-подсказки
-    const videoHint = document.createElement('div');
-    videoHint.style.marginTop = '10px';
-    videoHint.style.fontSize = '12px';
-    videoHint.style.color = '#6a7c9e';
-    videoHint.innerHTML = '🖱️ Любая ссылка на видео → ведёт на TradingView. Чтобы изменить ссылки, обнови массив <code>videosData</code> в коде.';
-    document.querySelector('.video-list')?.insertAdjacentElement('afterend', videoHint);
-</script>
 
-<!-- всё готово: кошельки с прогрессом, ссылки скрыты за названиями, сумма сбора меняется в коде, цель можно закрыть кнопкой -->
+    // ----- ФУНКЦИИ ДЛЯ РАБОТЫ С GITHUB -----
+    async function loadDataFromGitHub() {
+        try {
+            const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `token ${GITHUB_CONFIG.token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const content = JSON.parse(atob(data.content));
+                videos = content.videos || videos;
+                wallets = content.wallets || wallets;
+                return true;
+            } else {
+                await saveDataToGitHub();
+                return true;
+            }
+        } catch (e) {
+            console.error('Ошибка загрузки:', e);
+            return false;
+        }
+    }
+
+    async function saveDataToGitHub() {
+        try {
+            const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
+            let sha = null;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    sha = data.sha;
+                }
+            } catch (e) {}
+
+            const content = btoa(JSON.stringify({ videos, wallets }, null, 2));
+            const body = {
+                message: 'Обновление анкеты',
+                content: content,
+                branch: GITHUB_CONFIG.branch
+            };
+            if (sha) body.sha = sha;
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_CONFIG.token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (response.ok) {
+                return true;
+            } else {
+                const error = await response.json();
+                throw new Error(error.message || 'Ошибка сохранения');
+            }
+        } catch (e) {
+            console.error('Ошибка сохранения:', e);
+            alert('Не удалось сохранить данные на GitHub.');
+            return false;
+        }
+    }
+
+    // ----- АВТОМАТИЧЕСКИЙ ПОДСЧЁТ ЛЕТ -----
+    function calculateYears() {
+        const start = new Date(2020, 7, 1);
+        const today = new Date();
+        let years = today.getFullYear() - start.getFullYear();
+        if (today.getMonth() < start.getMonth() || (today.getMonth() === start.getMonth() && today.getDate() < start.getDate())) years--;
+        return Math.max(0, years);
+    }
+
+    function updateYears() {
+        const span = document.getElementById('yearsCount');
+        if (span) span.textContent = calculateYears();
+    }
+
+    // ----- ОСНОВНЫЕ ФУНКЦИИ -----
+    function renderMain() {
+        const videosContainer = document.getElementById('videosListContainer');
+        if (videosContainer) {
+            videosContainer.innerHTML = '';
+            videos.forEach(v => {
+                const div = document.createElement('div');
+                div.className = 'video-item';
+                div.innerHTML = `<a href="${escapeAttr(v.url)}" target="_blank">${escapeHtml(v.title)}</a>`;
+                videosContainer.appendChild(div);
+            });
+            if (!videos.length) videosContainer.innerHTML = '<p style="color:#7c8aa8;">Пока нет видео.</p>';
+        }
+
+        const donationContainer = document.getElementById('donationListContainer');
+        if (donationContainer) {
+            donationContainer.innerHTML = '';
+            wallets.forEach(w => {
+                const percent = Math.min(100, Math.floor((w.current / w.target) * 100));
+                const closed = w.closed || w.current >= w.target;
+                const div = document.createElement('div');
+                div.className = 'goal-item';
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+                        <strong>🎯 ${escapeHtml(w.title)}</strong>
+                        <span>${w.current} / ${w.target} ${escapeHtml(w.currency)}</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-fill" style="width:${percent}%;"></div></div>
+                    <div style="font-size:0.75rem;">${closed ? '✅ Сбор завершён' : '🔥 Прогресс ' + percent + '%'}</div>
+                    <div class="wallet-row">
+                        <div><strong>📡 ${escapeHtml(w.network)}</strong><br>${escapeHtml(w.address)}</div>
+                        <button class="copy-wallet-btn" data-address="${escapeAttr(w.address)}">Копировать</button>
+                    </div>
+                `;
+                donationContainer.appendChild(div);
+            });
+            if (!wallets.length) donationContainer.innerHTML = '<p style="color:#7c8aa8;">Кошельки не добавлены.</p>';
+            
+            document.querySelectorAll('.copy-wallet-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const addr = this.getAttribute('data-address');
+                    navigator.clipboard.writeText(addr).then(() => {
+                        const old = this.innerText;
+                        this.innerText = '✅ Скопировано!';
+                        setTimeout(() => this.innerText = old, 1500);
+                    });
+                };
+            });
+        }
+    }
+
+    function renderEditor() {
+        const videosDiv = document.getElementById('videosEditor');
+        const walletsDiv = document.getElementById('walletsEditor');
+        if (!videosDiv || !walletsDiv) return;
+
+        videosDiv.innerHTML = '';
+        videos.forEach((video, i) => {
+            const item = document.createElement('div');
+            item.className = 'video-editor-item';
+            item.innerHTML = `
+                <input type="text" value="${escapeHtml(video.title)}" data-video-title="${i}" placeholder="Название">
+                <input type="text" value="${escapeHtml(video.url)}" data-video-url="${i}" placeholder="Ссылка">
+                <div class="button-group">
+                    <button class="save-video-btn" data-idx="${i}" style="background:#2e6a4a;">💾 Сохранить</button>
+                    <button class="delete-video-btn" data-idx="${i}" style="background:#c42e3a;">🗑️ Удалить</button>
+                </div>
+            `;
+            videosDiv.appendChild(item);
+        });
+
+        walletsDiv.innerHTML = '';
+        wallets.forEach((wallet, i) => {
+            const item = document.createElement('div');
+            item.className = 'wallet-editor-item';
+            item.id = `wallet-editor-${i}`;
+            item.innerHTML = `
+                <div class="field-label">📝 Название</div>
+                <input type="text" id="wallet-title-${i}" value="${escapeHtml(wallet.title)}" placeholder="Название">
+                <div class="field-label">🌐 Сеть</div>
+                <input type="text" id="wallet-network-${i}" value="${escapeHtml(wallet.network)}" placeholder="Сеть">
+                <div class="field-label">💳 Адрес</div>
+                <input type="text" id="wallet-address-${i}" value="${escapeHtml(wallet.address)}" placeholder="Адрес">
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+                    <div style="flex:1;">
+                        <div class="field-label">💰 Текущая сумма</div>
+                        <input type="number" step="any" id="wallet-current-${i}" value="${wallet.current}" placeholder="0">
+                    </div>
+                    <div style="flex:1;">
+                        <div class="field-label">🎯 Цель</div>
+                        <input type="number" step="any" id="wallet-target-${i}" value="${wallet.target}" placeholder="100">
+                    </div>
+                    <div style="flex:0.8;">
+                        <div class="field-label">💱 Валюта</div>
+                        <input type="text" id="wallet-currency-${i}" value="${escapeHtml(wallet.currency)}" placeholder="USDT">
+                    </div>
+                </div>
+                <label style="display:flex; gap:10px; margin:12px 0;">
+                    <input type="checkbox" id="wallet-closed-${i}" ${wallet.closed ? 'checked' : ''}> 🔒 Сбор закрыт
+                </label>
+                <div class="button-group">
+                    <button class="save-wallet-btn" data-idx="${i}" style="background:#2e6a4a;">💾 Сохранить</button>
+                    <button class="delete-wallet-btn" data-idx="${i}" style="background:#c42e3a;">🗑️ УДАЛИТЬ</button>
+                </div>
+            `;
+            walletsDiv.appendChild(item);
+        });
+
+        // Сохранение видео
+        document.querySelectorAll('.save-video-btn').forEach(btn => {
+            btn.onclick = async function() {
+                const idx = parseInt(this.getAttribute('data-idx'));
+                const titleInput = document.querySelector(`[data-video-title="${idx}"]`);
+                const urlInput = document.querySelector(`[data-video-url="${idx}"]`);
+                if (titleInput && urlInput) {
+                    videos[idx].title = titleInput.value;
+                    videos[idx].url = urlInput.value;
+                    if (await saveDataToGitHub()) {
+                        renderMain();
+                        document.getElementById('adminMessage').innerHTML = '✅ Сохранено!';
+                        setTimeout(() => document.getElementById('adminMessage').innerHTML = '✅ Режим редактирования активен.', 1500);
+                    }
+                }
+            };
+        });
+
+        // Удаление видео
+        document.querySelectorAll('.delete-video-btn').forEach(btn => {
+            btn.onclick = async function() {
+                const idx = parseInt(this.getAttribute('data-idx'));
+                if (confirm(`Удалить видео "${videos[idx].title}"?`)) {
+                    videos.splice(idx, 1);
+                    if (await saveDataToGitHub()) {
+                        renderEditor();
+                        renderMain();
+                    }
+                }
+            };
+        });
+
+        // Сохранение кошелька
+        document.querySelectorAll('.save-wallet-btn').forEach(btn => {
+            btn.onclick = async function() {
+                const idx = parseInt(this.getAttribute('data-idx'));
+                wallets[idx] = {
+                    title: document.getElementById(`wallet-title-${idx}`).value,
+                    network: document.getElementById(`wallet-network-${idx}`).value,
+                    address: document.getElementById(`wallet-address-${idx}`).value,
+                    current: parseFloat(document.getElementById(`wallet-current-${idx}`).value) || 0,
+                    target: parseFloat(document.getElementById(`wallet-target-${idx}`).value) || 1,
+                    currency: document.getElementById(`wallet-currency-${idx}`).value,
+                    closed: document.getElementById(`wallet-closed-${idx}`).checked
+                };
+                if (await saveDataToGitHub()) {
+                    renderMain();
+                    document.getElementById('adminMessage').innerHTML = '✅ Сохранено!';
+                    setTimeout(() => document.getElementById('adminMessage').innerHTML = '✅ Режим редактирования активен.', 1500);
+                }
+            };
+        });
+
+        // Удаление кошелька
+        document.querySelectorAll('.delete-wallet-btn').forEach(btn => {
+            btn.onclick = async function() {
+                const idx = parseInt(this.getAttribute('data-idx'));
+                if (confirm(`Удалить кошелек "${wallets[idx].title}"?`)) {
+                    wallets.splice(idx, 1);
+                    if (await saveDataToGitHub()) {
+                        renderEditor();
+                        renderMain();
+                    }
+                }
+            };
+        });
+    }
+
+    // ----- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ -----
+    function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+    function escapeAttr(str) { return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    // ----- АДМИНКА С ПАРОЛЕМ -----
+    const modal = document.getElementById('adminModal');
+    const toggleBtn = document.getElementById('adminToggleBtn');
+    toggleBtn.onclick = () => {
+        const pwd = prompt("🔐 Код редактора:");
+        if (pwd === "2020") {
+            modal.classList.add('active');
+            renderEditor();
+            document.getElementById('adminMessage').innerHTML = '✅ Режим редактирования активен.';
+        } else if (pwd) alert("Неверный код");
+    };
+    document.getElementById('closeAdminBtn').onclick = () => {
+        modal.classList.remove('active');
+        renderMain();
+    };
+
+    document.getElementById('addVideoBtn').onclick = async () => {
+        videos.push({ title: "Новое видео", url: "https://www.youtube.com/embed/..." });
+        if (await saveDataToGitHub()) {
+            renderEditor();
+            renderMain();
+        }
+    };
+
+    document.getElementById('addWalletBtn').onclick = async () => {
+        wallets.push({ title: "Новый сбор", network: "TRC20", address: "адрес", current: 0, target: 100, currency: "USDT", closed: false });
+        if (await saveDataToGitHub()) {
+            renderEditor();
+            renderMain();
+        }
+    };
+
+    // ----- ЗАПУСК -----
+    async function init() {
+        await loadDataFromGitHub();
+        updateYears();
+        renderMain();
+        setInterval(updateYears, 3600000);
+    }
+
+    init();
+</script>
 </body>
 </html>
