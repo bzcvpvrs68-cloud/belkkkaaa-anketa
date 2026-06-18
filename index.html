@@ -335,6 +335,7 @@
             <button id="addWalletBtn" style="background:#2e6a4a;">+ Добавить кошелек</button>
         </div>
         <button id="closeAdminBtn" class="close-modal">Закрыть редактор</button>
+        <p style="font-size:12px; margin-top:12px; color:#aaa;">✅ Все изменения сохраняются в браузере</p>
     </div>
 </div>
 
@@ -352,90 +353,6 @@
         { title: "BNB (BSC) — запись курса", network: "BEP-20", address: "0xAbCdEf1234567890AbCdEf1234567890AbCdEf12", current: 0.8, target: 5, currency: "BNB", closed: false }
     ];
 
-    // ----- КОНФИГУРАЦИЯ GITHUB (ЗАМЕНИ НА СВОИ ДАННЫЕ) -----
-    const GITHUB_CONFIG = {
-        token: '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',        // Замени на свой токен
-        owner: 'bzcvpvrs68-cloud',          // Замени на свой никнейм GitHub
-        repo: 'belkkkaaa-anketa',       // Название репозитория
-        path: 'data.json',              // Имя файла для хранения данных
-        branch: 'main'                  // Ветка
-    };
-
-    // ----- ФУНКЦИИ ДЛЯ РАБОТЫ С GITHUB -----
-    async function loadDataFromGitHub() {
-        try {
-            const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `token ${GITHUB_CONFIG.token}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                const content = JSON.parse(atob(data.content));
-                videos = content.videos || videos;
-                wallets = content.wallets || wallets;
-                return true;
-            } else {
-                await saveDataToGitHub();
-                return true;
-            }
-        } catch (e) {
-            console.error('Ошибка загрузки:', e);
-            return false;
-        }
-    }
-
-    async function saveDataToGitHub() {
-        try {
-            const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
-            let sha = null;
-            try {
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `token ${GITHUB_CONFIG.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    sha = data.sha;
-                }
-            } catch (e) {}
-
-            const content = btoa(JSON.stringify({ videos, wallets }, null, 2));
-            const body = {
-                message: 'Обновление анкеты',
-                content: content,
-                branch: GITHUB_CONFIG.branch
-            };
-            if (sha) body.sha = sha;
-
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${GITHUB_CONFIG.token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify(body)
-            });
-
-            if (response.ok) {
-                return true;
-            } else {
-                const error = await response.json();
-                throw new Error(error.message || 'Ошибка сохранения');
-            }
-        } catch (e) {
-            console.error('Ошибка сохранения:', e);
-            alert('Не удалось сохранить данные на GitHub.');
-            return false;
-        }
-    }
-
     // ----- АВТОМАТИЧЕСКИЙ ПОДСЧЁТ ЛЕТ -----
     function calculateYears() {
         const start = new Date(2020, 7, 1);
@@ -448,6 +365,22 @@
     function updateYears() {
         const span = document.getElementById('yearsCount');
         if (span) span.textContent = calculateYears();
+    }
+
+    // ----- ЗАГРУЗКА И СОХРАНЕНИЕ В localStorage -----
+    function loadData() {
+        const saved = localStorage.getItem('belkkkaaa_anketa');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                if (data.videos) videos = data.videos;
+                if (data.wallets) wallets = data.wallets;
+            } catch (e) {}
+        }
+    }
+
+    function saveData() {
+        localStorage.setItem('belkkkaaa_anketa', JSON.stringify({ videos, wallets }));
     }
 
     // ----- ОСНОВНЫЕ ФУНКЦИИ -----
@@ -560,39 +493,37 @@
 
         // Сохранение видео
         document.querySelectorAll('.save-video-btn').forEach(btn => {
-            btn.onclick = async function() {
+            btn.onclick = function() {
                 const idx = parseInt(this.getAttribute('data-idx'));
                 const titleInput = document.querySelector(`[data-video-title="${idx}"]`);
                 const urlInput = document.querySelector(`[data-video-url="${idx}"]`);
                 if (titleInput && urlInput) {
                     videos[idx].title = titleInput.value;
                     videos[idx].url = urlInput.value;
-                    if (await saveDataToGitHub()) {
-                        renderMain();
-                        document.getElementById('adminMessage').innerHTML = '✅ Сохранено!';
-                        setTimeout(() => document.getElementById('adminMessage').innerHTML = '✅ Режим редактирования активен.', 1500);
-                    }
+                    saveData();
+                    renderMain();
+                    document.getElementById('adminMessage').innerHTML = '✅ Сохранено!';
+                    setTimeout(() => document.getElementById('adminMessage').innerHTML = '✅ Режим редактирования активен.', 1500);
                 }
             };
         });
 
         // Удаление видео
         document.querySelectorAll('.delete-video-btn').forEach(btn => {
-            btn.onclick = async function() {
+            btn.onclick = function() {
                 const idx = parseInt(this.getAttribute('data-idx'));
                 if (confirm(`Удалить видео "${videos[idx].title}"?`)) {
                     videos.splice(idx, 1);
-                    if (await saveDataToGitHub()) {
-                        renderEditor();
-                        renderMain();
-                    }
+                    saveData();
+                    renderEditor();
+                    renderMain();
                 }
             };
         });
 
         // Сохранение кошелька
         document.querySelectorAll('.save-wallet-btn').forEach(btn => {
-            btn.onclick = async function() {
+            btn.onclick = function() {
                 const idx = parseInt(this.getAttribute('data-idx'));
                 wallets[idx] = {
                     title: document.getElementById(`wallet-title-${idx}`).value,
@@ -603,24 +534,22 @@
                     currency: document.getElementById(`wallet-currency-${idx}`).value,
                     closed: document.getElementById(`wallet-closed-${idx}`).checked
                 };
-                if (await saveDataToGitHub()) {
-                    renderMain();
-                    document.getElementById('adminMessage').innerHTML = '✅ Сохранено!';
-                    setTimeout(() => document.getElementById('adminMessage').innerHTML = '✅ Режим редактирования активен.', 1500);
-                }
+                saveData();
+                renderMain();
+                document.getElementById('adminMessage').innerHTML = '✅ Сохранено!';
+                setTimeout(() => document.getElementById('adminMessage').innerHTML = '✅ Режим редактирования активен.', 1500);
             };
         });
 
         // Удаление кошелька
         document.querySelectorAll('.delete-wallet-btn').forEach(btn => {
-            btn.onclick = async function() {
+            btn.onclick = function() {
                 const idx = parseInt(this.getAttribute('data-idx'));
                 if (confirm(`Удалить кошелек "${wallets[idx].title}"?`)) {
                     wallets.splice(idx, 1);
-                    if (await saveDataToGitHub()) {
-                        renderEditor();
-                        renderMain();
-                    }
+                    saveData();
+                    renderEditor();
+                    renderMain();
                 }
             };
         });
@@ -646,31 +575,25 @@
         renderMain();
     };
 
-    document.getElementById('addVideoBtn').onclick = async () => {
+    document.getElementById('addVideoBtn').onclick = () => {
         videos.push({ title: "Новое видео", url: "https://www.youtube.com/embed/..." });
-        if (await saveDataToGitHub()) {
-            renderEditor();
-            renderMain();
-        }
+        saveData();
+        renderEditor();
+        renderMain();
     };
 
-    document.getElementById('addWalletBtn').onclick = async () => {
+    document.getElementById('addWalletBtn').onclick = () => {
         wallets.push({ title: "Новый сбор", network: "TRC20", address: "адрес", current: 0, target: 100, currency: "USDT", closed: false });
-        if (await saveDataToGitHub()) {
-            renderEditor();
-            renderMain();
-        }
+        saveData();
+        renderEditor();
+        renderMain();
     };
 
     // ----- ЗАПУСК -----
-    async function init() {
-        await loadDataFromGitHub();
-        updateYears();
-        renderMain();
-        setInterval(updateYears, 3600000);
-    }
-
-    init();
+    loadData();
+    updateYears();
+    renderMain();
+    setInterval(updateYears, 3600000);
 </script>
 </body>
 </html>
